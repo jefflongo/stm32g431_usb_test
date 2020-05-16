@@ -1,4 +1,11 @@
 MAIN_TARGET = usb.elf
+
+ifeq ($(OS),Windows_NT)
+	FLASH_PROGRAM = STM32_Programmer_CLI.exe
+else
+	FLASH_PROGRAM = STM32_Programmer.sh
+endif
+
 WARNINGS = \
 	-Werror=all \
 	-Werror=extra \
@@ -24,7 +31,9 @@ SOURCES = \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.c \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pcd.c \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pcd_ex.c \
+	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_exti.c \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_gpio.c \
+	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_i2c.c \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_usb.c \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_utils.c \
 	ext/STM32CubeG4/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c \
@@ -68,6 +77,10 @@ C_INCLUDES := $(addprefix -I,$(C_INC_DIRS)) $(INCLUDES)
 CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) $(WARNINGS) -fdata-sections -ffunction-sections
 CFLAGS += -MMD -MP
 
+ifeq ($(DEBUG), 1)
+CFLAGS += -g -gdwarf-2
+endif
+
 LIB_DIRS ?= 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LD_SCRIPT) $(LIB_DIRS) $(LIBS) \
 	-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
@@ -93,4 +106,4 @@ clean:
 -include $(DEPS)
 
 flash: $(BUILD_DIR)/$(MAIN_TARGET)
-	STM32_Programmer.sh -c port=SWD -e all -w $(BUILD_DIR)/$(MAIN_TARGET) -v -rst
+	$(FLASH_PROGRAM) -c port=SWD -e all -w $(BUILD_DIR)/$(MAIN_TARGET) -v -rst

@@ -1,6 +1,6 @@
 #include "usb/cdc.h"
 #include "sys/clocks.h"
-
+#include "board.h"
 #include <assert.h>
 #include <stm32g4xx_ll_gpio.h>
 
@@ -18,11 +18,11 @@ PCD_HandleTypeDef board_pcd = {
 };
 
 void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd) {
-  LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_11, LL_GPIO_MODE_ANALOG);
-  LL_GPIO_SetPinPull(GPIOA, LL_GPIO_PIN_11, LL_GPIO_PULL_NO);
+  LL_GPIO_SetPinMode(BOARD_USB_DP_PORT, BOARD_USB_DP_PIN, LL_GPIO_MODE_ANALOG);
+  LL_GPIO_SetPinPull(BOARD_USB_DP_PORT, BOARD_USB_DP_PIN, LL_GPIO_PULL_NO);
 
-  LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_12, LL_GPIO_MODE_ANALOG);
-  LL_GPIO_SetPinPull(GPIOA, LL_GPIO_PIN_12, LL_GPIO_PULL_NO);
+  LL_GPIO_SetPinMode(BOARD_USB_DM_PORT, BOARD_USB_DM_PIN, LL_GPIO_MODE_ANALOG);
+  LL_GPIO_SetPinPull(BOARD_USB_DM_PORT, BOARD_USB_DM_PIN, LL_GPIO_PULL_NO);
 
   __HAL_RCC_USB_CLK_ENABLE();
 
