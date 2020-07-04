@@ -32,6 +32,10 @@ int main(int argc, char const* argv[]) {
 
     __enable_irq();
 
+    stusb_negotiate(false);
+
     while (1) {
+        printf("Hello Cody\r\n");
+        HAL_Delay(1000);
     }
 }
