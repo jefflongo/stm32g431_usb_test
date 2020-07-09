@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 typedef enum {
     BQ_IIN_MAX_100MA = 0b000,
     BQ_IIN_MAX_150MA = 0b001,

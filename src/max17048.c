@@ -3,7 +3,7 @@
 #include "i2c.h"
 
 // MAX17048 i2c address
-#define MAX_ADDR 0x6C
+#define MAX_ADDR 0x36
 
 // MAX17048 registers
 #define VCELL 0x02     // R/-: ADC measurement of VCELL, 78.125uV/cell
@@ -22,60 +22,59 @@
 // MAX17048 masks
 #define ALRT_MASK 0x0020
 
-int max_init(void) {
-    int ok = I2C_OK;
+bool max_init(void) {
+    bool ok = true;
 
-    if (ok == I2C_OK)
-        ok = i2c_master_write_u16(
-          MAX_ADDR, VALRT, 0xA5D7); // Set VALRT.MIN = 3.3V, VALRT.MAX = 4.3V
-    if (ok == I2C_OK)
-        ok = i2c_master_write_u8(
-          MAX_ADDR, VRESET_ID, 0x7C); // Set VRESET to 2.5V (captive batteries)
-    if (ok == I2C_OK)
-        ok = i2c_master_write_u8(MAX_ADDR, STATUS, 0x00); // Clear all alerts
-    if (ok == I2C_OK)
+    if (ok)
+        ok =
+          i2c_master_write_u16(MAX_ADDR, VALRT, 0xA5D7); // Set VALRT.MIN = 3.3V, VALRT.MAX = 4.3V
+    if (ok)
+        ok =
+          i2c_master_write_u8(MAX_ADDR, VRESET_ID, 0x7C); // Set VRESET to 2.5V (captive batteries)
+    if (ok) ok = i2c_master_write_u8(MAX_ADDR, STATUS, 0x00); // Clear all alerts
+    if (ok)
         ok = i2c_master_write_u16(
           // Disable SOC change alert, set bat low threshold, deassert alert
           MAX_ADDR,
           CONFIG,
-          0x9700 | 32 - (BAT_LOW_PERCENT % 32));
+          0x9700 | (32 - (BAT_LOW_PERCENT % 32)));
 
-    return (ok == I2C_OK) ? MAX_OK : MAX_FAILURE;
+    return ok;
 }
 
-int max_clear_alert(void) {
-    int ok = I2C_OK;
+bool max_clear_alert(void) {
+    bool ok = true;
 
     uint16_t buf;
-    if (ok == I2C_OK) ok = i2c_master_write_u8(MAX_ADDR, STATUS, 0x00);
-    if (ok == I2C_OK) ok = i2c_master_read_u16(MAX_ADDR, CONFIG, &buf);
-    if (ok == I2C_OK) buf &= ~ALRT_MASK;
-    if (ok == I2C_OK) ok = i2c_master_write_u16(MAX_ADDR, CONFIG, buf);
+    if (ok) ok = i2c_master_write_u8(MAX_ADDR, STATUS, 0x00);
+    if (ok) ok = i2c_master_read_u16(MAX_ADDR, CONFIG, &buf);
+    if (ok) buf &= ~ALRT_MASK;
+    if (ok) ok = i2c_master_write_u16(MAX_ADDR, CONFIG, buf);
 
-    return (ok == I2C_OK) ? MAX_OK : MAX_FAILURE;
+    return ok;
 }
 
-int max_get_vcell(uint16_t* voltage) {
-    int ok = I2C_OK;
+bool max_get_vcell(uint16_t* voltage) {
+    bool ok = true;
 
-    if (ok == I2C_OK) ok = i2c_master_read_u16(MAX_ADDR, VCELL, voltage);
-    if (ok == I2C_OK) *voltage *= 0.078125;
+    if (ok) ok = i2c_master_read_u16(MAX_ADDR, VCELL, voltage);
+    if (ok) *voltage *= 0.078125;
 
-    return (ok == I2C_OK) ? MAX_OK : MAX_FAILURE;
+    return ok;
 }
 
-int max_get_soc(uint8_t* percent) {
-    int ok = I2C_OK;
+bool max_get_soc(uint8_t* percent) {
+    bool ok = true;
 
-    if (ok == I2C_OK) ok = i2c_master_read_u8(MAX_ADDR, SOC, percent);
+    if (ok) ok = i2c_master_read_u8(MAX_ADDR, SOC, percent);
 
-    return (ok == I2C_OK) ? MAX_OK : MAX_FAILURE;
+    return ok;
 }
 
-int max_get_status(uint8_t* status) {
-    int ok = I2C_OK;
+bool max_get_status(uint8_t* status) {
+    bool ok = true;
 
-    if (ok == I2C_OK) ok = i2c_master_read_u8(MAX_ADDR, STATUS, status);
+    if (ok) ok = i2c_master_read_u8(MAX_ADDR, STATUS, status);
 
-    return (ok == I2C_OK) ? MAX_OK : MAX_FAILURE;
+    return ok;
 }
