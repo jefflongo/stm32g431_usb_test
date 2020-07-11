@@ -35,8 +35,8 @@ __attribute__((nonnull)) bool bq24292i_get_recharge_offset(bq24292i_vrechg_offse
 bool bq24292i_set_batlow_voltage(bq24292i_vbatlow_t mv);
 __attribute__((nonnull)) bool bq24292i_get_batlow_voltage(bq24292i_vbatlow_t* mv);
 
-bool bq24292i_set_vchg_max(bq24292i_vchg_max_t mv);
-__attribute__((nonnull)) bool bq24292i_get_vchg_max(bq24292i_vchg_max_t* mv);
+bool bq24292i_set_max_charge_voltage(bq24292i_vchg_max_t mv);
+__attribute__((nonnull)) bool bq24292i_get_max_charge_voltage(bq24292i_vchg_max_t* mv);
 
 bool bq24292i_set_charge_timer(bq24292i_chg_timer_t conf);
 __attribute__((nonnull)) bool bq24292i_get_charge_timer(bq24292i_chg_timer_t* conf);

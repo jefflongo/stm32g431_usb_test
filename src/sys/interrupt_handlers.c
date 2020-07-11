@@ -27,6 +27,8 @@ void EXTI2_IRQHandler(void) {
         SYS_DELAY_MS(20);
         if (!LL_GPIO_IsInputPinSet(BOARD_PWR_BTN_PORT, BOARD_PWR_BTN_PIN)) {
             stusb_negotiate(false);
+            LL_GPIO_TogglePin(BOARD_PWR_ON_PORT, BOARD_PWR_ON_PIN);
+            LL_GPIO_TogglePin(BOARD_DEBUG_N_PORT, BOARD_DEBUG_N_PIN);
         }
         LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_2);
     }

@@ -41,7 +41,7 @@ bool pmic_init(void) {
     if (ok) ok = bq24292i_set_iin_max(BQ_IIN_MAX_3000MA);
     if (ok) ok = bq24292i_set_vsys_min(3500);
 #if NUM_CELLS == 1
-    if (ok) ok = bq24292i_set_charge_current(512);
+    if (ok) ok = bq24292i_set_charge_current(1600);
 #elif NUM_CELLS == 2
     if (ok) ok = bq24292i_set_charge_current(3200);
 #elif NUM_CELLS >= 3
@@ -49,7 +49,7 @@ bool pmic_init(void) {
 #endif
     if (ok) ok = bq24292i_set_term_current(128);
     if (ok) ok = bq24292i_set_precharge_current(128);
-    if (ok) ok = bq24292i_set_vchg_max(4200);
+    if (ok) ok = bq24292i_set_max_charge_voltage(4200);
     if (ok) ok = bq24292i_set_wdt_config(BQ_WATCHDOG_DISABLE);
 
     return ok;
@@ -68,14 +68,12 @@ int main(int argc, char const* argv[]) {
 
     __enable_irq();
 
-    pmic_init();
+    bool init_success = pmic_init();
 
     while (1) {
         SYS_DELAY_MS(5000);
-        uint16_t voltage;
-        max_get_vcell(&voltage);
-        uint8_t soc;
-        max_get_soc(&soc);
-        printf("voltage: %u soc: %u\r\n", voltage, soc);
+        bq24292i_charge_state_t state;
+        bq24292i_get_charge_state(&state);
+        printf("%u %u\r\n", init_success, state);
     }
 }

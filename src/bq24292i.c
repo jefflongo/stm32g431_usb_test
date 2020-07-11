@@ -326,13 +326,13 @@ bool bq24292i_get_batlow_voltage(bq24292i_vbatlow_t* mv) {
     return true;
 }
 
-bool bq24292i_set_vchg_max(bq24292i_vchg_max_t mv) {
+bool bq24292i_set_max_charge_voltage(bq24292i_vchg_max_t mv) {
     uint8_t data = (perform_adc(mv, VCHG_MAX_OFFSET, VCHG_MAX_INCR) << VCHG_MAX_POS) & VCHG_MAX_MSK;
 
     return modify_reg(CHRG_VOLTAGE_CTRL, data, VCHG_MAX_MSK);
 }
 
-bool bq24292i_get_vchg_max(bq24292i_vchg_max_t* mv) {
+bool bq24292i_get_max_charge_voltage(bq24292i_vchg_max_t* mv) {
     uint8_t data;
     if (!read_reg(CHRG_VOLTAGE_CTRL, &data)) {
         return false;
