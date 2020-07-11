@@ -71,9 +71,12 @@ int main(int argc, char const* argv[]) {
     bool init_success = pmic_init();
 
     while (1) {
-        SYS_DELAY_MS(5000);
-        bq24292i_charge_state_t state;
-        bq24292i_get_charge_state(&state);
-        printf("%u %u\r\n", init_success, state);
+        SYS_DELAY_MS(1000);
+        uint8_t state;
+        if (max_get_soc(&state)) {
+            printf("%u %u\r\n", init_success, state);
+        } else {
+            printf("failed to read max\r\n");
+        }
     }
 }
