@@ -95,4 +95,4 @@ enum {
     BQ_FAULT_BOOST = 0x40,
     BQ_FAULT_WATCHDOG = 0x80,
 };
-typedef uint8_t bq24292i_fault_mask_t;
+typedef uint8_t bq24292i_fault_t;

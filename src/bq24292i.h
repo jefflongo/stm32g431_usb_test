@@ -74,4 +74,4 @@ __attribute__((nonnull)) bool bq24292i_get_charge_state(bq24292i_charge_state_t*
 
 __attribute__((nonnull)) bool bq24292i_get_source_type(bq24292i_source_type_t* source);
 
-__attribute__((nonnull)) bool bq24292i_check_faults(bq24292i_fault_mask_t mask, bool* fault);
+__attribute__((nonnull)) bool bq24292i_check_faults(bq24292i_fault_t* faults);

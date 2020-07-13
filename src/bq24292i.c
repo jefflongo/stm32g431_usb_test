@@ -15,7 +15,7 @@
 #define IR_COMP_THERMAL_REG_CTRL 0x06  // R/W: IR compensation / thermal regulation control
 #define MISC_OPERATION_CTRL 0x07       // R/W: Misc operation control
 #define SYSTEM_STATUS 0x08             // R/-: System status
-#define FAULT 0x09                     // R/-: Fault
+#define FAULT 0x09                     // R/-: Fault (cleared after read)
 #define VENDOR_PART_REV_STATUS 0x0A    // R/-: Vendor / part / revision status
 
 // BQ24292i masks/constants
@@ -543,12 +543,13 @@ bool bq24292i_get_source_type(bq24292i_source_type_t* source) {
     return true;
 }
 
-bool bq24292i_check_faults(bq24292i_fault_mask_t mask, bool* fault) {
+bool bq24292i_check_faults(bq24292i_fault_t* faults) {
     uint8_t data;
     if (!read_reg(FAULT, &data)) {
         return false;
     }
+    // after read, the fault register is cleared
 
-    *fault = data & mask;
+    *faults = data;
     return true;
 }

@@ -22,35 +22,30 @@ int _write(int file, char* data, int len) {
     return usb_cdc_write((uint8_t*)data, len) ? len : 0;
 }
 
-// const static uint8_t config[8] = {
-//     0x3F, // REG00: Vbat max = 4.44V, bat current output = 3A
-//     0x1B, // REG01: Vsys min = 3.5V
-//     0x40, // REG02: Charge current limit of 1.5A
-//     0x00, // REG03: 128mA pre-charge/termination current limit
-//     0xB2, // REG04: 3.0-4.2V battery voltage range
-//     0x8A, // REG05: Disable i2c timer, enable safety timer/charge timer
-//     0x03, // REG06: Thermal regulation threshold 120C
-//     0x40, // REG07: No interrupt on charge/bat fault
-// };
-
 #define NUM_CELLS 1
 bool pmic_init(void) {
     bool ok = true;
+    bq24292i_fault_t clear;
 
     if (ok) ok = bq24292i_is_present();
     if (ok) ok = bq24292i_set_iin_max(BQ_IIN_MAX_3000MA);
     if (ok) ok = bq24292i_set_vsys_min(3500);
-#if NUM_CELLS == 1
-    if (ok) ok = bq24292i_set_charge_current(1600);
-#elif NUM_CELLS == 2
-    if (ok) ok = bq24292i_set_charge_current(3200);
-#elif NUM_CELLS >= 3
-    if (ok) ok = bq24292i_set_charge_current(4800);
-#endif
+    if (ok) ok = bq24292i_set_charge_current(1600 * NUM_CELLS);
     if (ok) ok = bq24292i_set_term_current(128);
     if (ok) ok = bq24292i_set_precharge_current(128);
     if (ok) ok = bq24292i_set_max_charge_voltage(4200);
     if (ok) ok = bq24292i_set_wdt_config(BQ_WATCHDOG_DISABLE);
+    if (ok) ok = bq24292i_check_faults(&clear);
+    if (ok) (void)clear;
+
+    if (ok) ok = max17048_is_present();
+    if (ok) ok = max17048_set_undervolted_voltage(3300);
+    if (ok) ok = max17048_set_overvolted_voltage(4300);
+    if (ok) ok = max17048_set_reset_voltage(2500);
+    if (ok) ok = max17048_set_bat_low_soc(15);
+    if (ok) ok = max17048_set_voltage_reset_alert(false);
+    if (ok) ok = max17048_set_soc_change_alert(false);
+    if (ok) ok = max17048_clear_alerts();
 
     return ok;
 }
@@ -71,12 +66,13 @@ int main(int argc, char const* argv[]) {
     bool init_success = pmic_init();
 
     while (1) {
-        SYS_DELAY_MS(1000);
-        uint8_t state;
-        if (max_get_soc(&state)) {
-            printf("%u %u\r\n", init_success, state);
-        } else {
-            printf("failed to read max\r\n");
-        }
+        SYS_DELAY_MS(3000);
+
+        max17048_soc_t soc;
+        max17048_voltage_t vbat;
+
+        max17048_get_vcell(&vbat);
+        max17048_get_soc(&soc);
+        printf("init: %u vbat: %u soc: %u\r\n", init_success, vbat, soc);
     }
 }
