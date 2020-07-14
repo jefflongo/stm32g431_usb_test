@@ -44,7 +44,7 @@ bool pmic_init(void) {
     if (ok) ok = max17048_set_reset_voltage(2500);
     if (ok) ok = max17048_set_bat_low_soc(15);
     if (ok) ok = max17048_set_voltage_reset_alert(false);
-    if (ok) ok = max17048_set_soc_change_alert(false);
+    if (ok) ok = max17048_set_soc_change_alert(true);
     if (ok) ok = max17048_clear_alerts();
 
     return ok;

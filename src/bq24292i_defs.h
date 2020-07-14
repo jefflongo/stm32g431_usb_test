@@ -91,7 +91,7 @@ typedef enum {
 enum {
     BQ_FAULT_THERM = 0x07,
     BQ_FAULT_BAT = 0x08,
-    BQ_FAULT_CHG_ = 0x30,
+    BQ_FAULT_CHG = 0x30,
     BQ_FAULT_BOOST = 0x40,
     BQ_FAULT_WATCHDOG = 0x80,
 };

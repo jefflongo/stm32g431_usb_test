@@ -503,7 +503,7 @@ bool bq24292i_is_overtemp(bool* result) {
     return true;
 }
 
-bool bq24292i_is_power_good(bool* result) {
+bool bq24292i_is_charger_connected(bool* result) {
     uint8_t data;
     if (!read_reg(SYSTEM_STATUS, &data)) {
         return false;

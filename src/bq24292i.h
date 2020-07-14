@@ -66,7 +66,7 @@ bool bq24292i_is_vsys_boosted(bool* result);
 
 bool bq24292i_is_overtemp(bool* result);
 
-bool bq24292i_is_power_good(bool* result);
+bool bq24292i_is_charger_connected(bool* result);
 
 bool bq24292i_is_in_dpm(bool* result);
 
