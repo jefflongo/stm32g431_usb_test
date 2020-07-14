@@ -4,6 +4,7 @@
 #include "max17048.h"
 #include "stusb4500.h"
 #include "sys/clocks.h"
+#include "sys/sys.h"
 #include "usb/cdc.h"
 
 #include <errno.h>

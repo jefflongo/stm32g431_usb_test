@@ -1,7 +1,9 @@
+#include "app_conf.h"
 #include "board.h"
 #include "bq24292i.h"
 #include "max17048.h"
 #include "stusb4500.h"
+#include "sys/sys.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -75,7 +77,7 @@ void EXTI1_IRQHandler(void) {
     if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_1)) {
         NVIC_DisableIRQ(BOARD_CABLE_DET_IRQ);
         LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_1);
-        stusb_negotiate(true);
+        stusb4500_negotiate(&stusb4500_config, true);
         // TODO: A result of the stusb resetting in the interrupt,
         // this is obviously temporary and bad
         SYS_DELAY_MS(5000);
