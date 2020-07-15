@@ -77,11 +77,11 @@ void EXTI1_IRQHandler(void) {
     if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_1)) {
         NVIC_DisableIRQ(BOARD_CABLE_DET_IRQ);
         LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_1);
-        stusb4500_negotiate(&stusb4500_config, true);
+        bool success = stusb4500_negotiate(&stusb4500_config, true);
         // TODO: A result of the stusb resetting in the interrupt,
         // this is obviously temporary and bad
         SYS_DELAY_MS(5000);
-        printf("usb cable detected\r\n");
+        printf("usb cable detected: %d\r\n", success);
         NVIC_EnableIRQ(BOARD_CABLE_DET_IRQ);
     }
 }
