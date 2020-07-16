@@ -99,13 +99,13 @@ static bool reset(stusb4500_config_t* config) {
     // Enable software reset
     if (!i2c_master_write_u8(STUSB_ADDR, RESET_CTRL, SW_RESET_ON)) return false;
 
-    // Wait for stusb to respond
-    if (!is_present(config)) return false;
-
-    // TODO: Necessary? Wait for source to be ready
+    // Wait for VBUS to discharge
     uint32_t time = config->get_ms();
     while ((uint32_t)(config->get_ms() - time) < RESET_DELAY_MS)
         ;
+
+    // Verify reset success
+    if (!is_present(config)) return false;
 
     // Disable software reset
     if (!i2c_master_write_u8(STUSB_ADDR, RESET_CTRL, SW_RESET_OFF)) return false;
