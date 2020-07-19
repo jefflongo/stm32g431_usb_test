@@ -5,6 +5,7 @@
 #include "stusb4500.h"
 #include "sys/clocks.h"
 #include "sys/sys.h"
+#include "timer.h"
 #include "usb/cdc.h"
 
 #include <errno.h>
@@ -23,8 +24,13 @@ int _write(int file, char* data, int len) {
     return usb_cdc_write((uint8_t*)data, len) ? len : 0;
 }
 
+// timer timebase
+timer_time_t _timer_get_time(void) {
+    return HAL_GetTick();
+}
+
 #define NUM_CELLS 1
-bool pmic_init(void) {
+static bool pmic_init(void) {
     bool ok = true;
     bq24292i_fault_t clear;
 
@@ -51,6 +57,24 @@ bool pmic_init(void) {
     return ok;
 }
 
+static void pmic_update(void* context);
+
+static timer_task_t pmic_update_timer = {
+    .callback = pmic_update,
+    .context = NULL,
+};
+
+static void pmic_update(void* context) {
+    (void)context;
+    max17048_soc_t soc;
+    max17048_voltage_t vbat;
+
+    max17048_get_vcell(&vbat);
+    max17048_get_soc(&soc);
+    printf("vbat: %u soc: %u\r\n", vbat, soc);
+    timer_add_new(&pmic_update_timer, 3000);
+}
+
 int main(int argc, char const* argv[]) {
     (void)argc;
     (void)argv;
@@ -64,16 +88,10 @@ int main(int argc, char const* argv[]) {
 
     __enable_irq();
 
-    bool init_success = pmic_init();
+    pmic_init();
+    timer_add_new(&pmic_update_timer, 3000);
 
     while (1) {
-        SYS_DELAY_MS(3000);
-
-        max17048_soc_t soc;
-        max17048_voltage_t vbat;
-
-        max17048_get_vcell(&vbat);
-        max17048_get_soc(&soc);
-        printf("init: %u vbat: %u soc: %u\r\n", init_success, vbat, soc);
+        timer_update();
     }
 }

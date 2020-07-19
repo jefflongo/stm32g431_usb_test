@@ -4,6 +4,7 @@
 #include "max17048.h"
 #include "stusb4500.h"
 #include "sys/sys.h"
+#include "timer.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -73,16 +74,24 @@ void EXTI0_IRQHandler(void) {
     }
 }
 
+static void stusb4500_enable(void* context) {
+    (void)context;
+    printf("enabling STUSB4500\r\n");
+    NVIC_EnableIRQ(BOARD_CABLE_DET_IRQ);
+}
+
+static timer_task_t stusb4500_enable_timer = {
+    .callback = stusb4500_enable,
+    .context = NULL,
+};
+
 void EXTI1_IRQHandler(void) {
     if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_1)) {
         NVIC_DisableIRQ(BOARD_CABLE_DET_IRQ);
         LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_1);
         bool success = stusb4500_negotiate(&stusb4500_config, true);
-        // TODO: A result of the stusb resetting in the interrupt,
-        // this is obviously temporary and bad
-        SYS_DELAY_MS(5000);
         printf("usb cable detected: %d\r\n", success);
-        NVIC_EnableIRQ(BOARD_CABLE_DET_IRQ);
+        timer_add_new(&stusb4500_enable_timer, 5000);
     }
 }
 
