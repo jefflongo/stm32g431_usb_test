@@ -42,7 +42,10 @@ SOURCES = \
 	ext/STM32CubeG4/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
 INC_DIRS = \
 	src \
+	src/app \
 	src/conf \
+	src/driver \
+	src/i2c \
 	ext/STM32CubeG4/Drivers/CMSIS/Core/Include \
 	ext/STM32CubeG4/Drivers/CMSIS/Device/ST/STM32G4xx/Include \
 	ext/STM32CubeG4/Drivers/STM32G4xx_HAL_Driver/Inc \
