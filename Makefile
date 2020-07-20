@@ -1,4 +1,4 @@
-MAIN_TARGET = usb.elf
+MAIN_TARGET = wii-pocket.elf
 
 ifeq ($(OS),Windows_NT)
 	FLASH_PROGRAM = STM32_Programmer_CLI.exe
