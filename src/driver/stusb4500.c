@@ -234,7 +234,7 @@ bool stusb4500_negotiate(stusb4500_config_t* config, bool on_interrupt) {
         if (!HEADER_NUM_DATA_OBJECTS(header) || HEADER_MESSAGE_TYPE(header) != SRC_CAPABILITIES_MSG)
             continue;
 
-        // Read number of rec   eived bytes
+        // Read number of received bytes
         if (!i2c_master_read_u8(STUSB_ADDR, RX_BYTE_CNT, buffer)) return false;
 
         // Check for missing data
