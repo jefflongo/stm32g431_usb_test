@@ -77,10 +77,17 @@ SECTIONS {
     . = ALIGN(4);
     _edata = .;
   } >RAM AT> FLASH
-
   
-  . = ALIGN(4);
+  .noinit : {
+    . = ALIGN(4);
+    _noinit_start = .;
+    *(.noinit*)
+    . = ALIGN(4);
+    _noinit_end = .;
+  } >RAM
+
   .bss : {
+    . = ALIGN(4);
     _sbss = .;
     __bss_start__ = _sbss;
     *(.bss)

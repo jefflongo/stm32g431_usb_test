@@ -97,7 +97,7 @@ bool _i2c_master_write_impl(
           len > NBYTES_MAX ? LL_I2C_MODE_RELOAD : LL_I2C_MODE_AUTOEND,
           LL_I2C_GENERATE_NOSTARTSTOP);
 
-        while (len % NBYTES_MAX) {
+        while (len % (NBYTES_MAX + 1)) {
             // Transmit data byte
             TIMED_CONDITION(LL_I2C_IsActiveFlag_TXIS(BOARD_I2C), I2C_TIMEOUT, timer, return false);
             LL_I2C_TransmitData8(BOARD_I2C, *pbuf++);
