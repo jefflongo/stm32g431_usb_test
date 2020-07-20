@@ -69,7 +69,7 @@ void board_init(void) {
     config.Line_32_63 = 0;
     config.LineCommand = ENABLE;
     config.Mode = LL_EXTI_MODE_IT;
-    config.Trigger = LL_EXTI_TRIGGER_FALLING;
+    config.Trigger = LL_EXTI_TRIGGER_RISING_FALLING;
     LL_EXTI_Init(&config);
     HAL_NVIC_SetPriority(BOARD_PWR_BTN_IRQ, 1, 0);
     HAL_NVIC_EnableIRQ(BOARD_PWR_BTN_IRQ);
