@@ -8,7 +8,7 @@ void timer_update(void) {
     timer_time_t now = _timer_get_time();
     timer_task_t* current = head;
     while (current) {
-        if ((timer_time_diff_t)(current->_end_time - now <= 0)) {
+        if ((timer_time_diff_t)(current->_end_time - now) <= 0) {
             timer_task_t* expired = current;
             current = current->_next;
             timer_remove(expired);

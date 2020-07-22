@@ -129,9 +129,9 @@ static bool
   load_optimal_pdo(stusb4500_config_t* config, stusb4500_pdo_t* src_pdos, uint8_t num_pdos) {
     bool found = false;
 
-    stusb4500_current_t opt_pdo_current = 0;
-    stusb4500_voltage_t opt_pdo_voltage = 0;
-    stusb4500_power_t opt_pdo_power = 0;
+    stusb4500_current_t opt_pdo_current = 1000;
+    stusb4500_voltage_t opt_pdo_voltage = 5000;
+    stusb4500_power_t opt_pdo_power = opt_pdo_voltage * opt_pdo_current;
 
     // Search for the optimal PDO, if any
     for (int i = 0; i < num_pdos; i++) {
@@ -185,7 +185,7 @@ static bool
           (int)(opt_pdo_power / 1000),
           (int)(opt_pdo_power % 1000));
     } else {
-        printf("No suitable PDO found\r\n\r\n");
+        printf("No suitable PDO found, negotiating 5V\r\n\r\n");
     }
 #endif // STUSB4500_ENABLE_PRINTF
 
