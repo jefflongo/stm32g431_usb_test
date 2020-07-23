@@ -34,7 +34,7 @@ int main(int argc, char const* argv[]) {
     HAL_Init();
 
     system_clock_init();
-    board_init();
+    board_gpio_init();
 
     usb_cdc_init();
     i2c_master_init();
@@ -42,6 +42,7 @@ int main(int argc, char const* argv[]) {
     __enable_irq();
 
     pmic_init();
+    board_interrupts_init();
 
     while (1) {
         timer_update();

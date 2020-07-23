@@ -6,6 +6,7 @@
 #include "timer.h"
 
 #include <stdio.h>
+#include <stm32g4xx_hal.h>
 
 #define NUM_CELLS 1
 
@@ -52,6 +53,8 @@ bool pmic_init(void) {
     if (ok) ok = max17048_set_voltage_reset_alert(false);
     if (ok) ok = max17048_set_soc_change_alert(true);
     if (ok) ok = max17048_clear_alerts();
+
+    stusb4500_negotiate(&stusb4500_config, false);
 
     timer_add_new(&pmic_update_timer, 3000);
 
@@ -126,20 +129,7 @@ void max17048_on_interrupt(void) {
     }
 }
 
-static void stusb4500_enable(void* context) {
-    (void)context;
-    printf("enabling STUSB4500\r\n");
-    NVIC_EnableIRQ(BOARD_CABLE_DET_IRQ);
-}
-
-static timer_task_t stusb4500_enable_timer = {
-    .callback = stusb4500_enable,
-    .context = NULL,
-};
-
 void stusb4500_on_interrupt(void) {
-    NVIC_DisableIRQ(BOARD_CABLE_DET_IRQ);
     bool success = stusb4500_negotiate(&stusb4500_config, true);
     printf("usb cable detected: %d\r\n", success);
-    timer_add_new(&stusb4500_enable_timer, 5000);
 }

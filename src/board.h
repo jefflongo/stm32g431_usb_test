@@ -1,7 +1,5 @@
 #pragma once
 
-void board_init(void);
-
 #define BOARD_BQ_INT_PORT GPIOA
 #define BOARD_BQ_INT_PIN LL_GPIO_PIN_0
 #define BOARD_BQ_INT_IRQ EXTI0_IRQn
@@ -50,3 +48,6 @@ void board_init(void);
 #define BOARD_VOL_UP_IRQ EXTI4_IRQn
 
 #define BOARD_I2C I2C1
+
+void board_gpio_init(void);
+void board_interrupts_init(void);

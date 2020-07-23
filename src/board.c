@@ -6,7 +6,7 @@
 #include <stm32g4xx_ll_pwr.h>
 #include <stm32g4xx_ll_system.h>
 
-void board_init(void) {
+void board_gpio_init(void) {
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOF);
@@ -39,10 +39,12 @@ void board_init(void) {
 
     LL_GPIO_SetPinMode(BOARD_PWR_ON_PORT, BOARD_PWR_ON_PIN, LL_GPIO_MODE_OUTPUT);
     LL_GPIO_ResetOutputPin(BOARD_PWR_ON_PORT, BOARD_PWR_ON_PIN);
+}
+
+void board_interrupts_init(void) {
+    LL_EXTI_InitTypeDef config;
 
     __HAL_RCC_SYSCFG_CLK_ENABLE();
-
-    LL_EXTI_InitTypeDef config;
 
     LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTA, LL_SYSCFG_EXTI_LINE0);
     config.Line_0_31 = LL_EXTI_LINE_0;
@@ -51,7 +53,7 @@ void board_init(void) {
     config.Mode = LL_EXTI_MODE_IT;
     config.Trigger = LL_EXTI_TRIGGER_FALLING;
     LL_EXTI_Init(&config);
-    HAL_NVIC_SetPriority(BOARD_BQ_INT_IRQ, 1, 0);
+    HAL_NVIC_SetPriority(BOARD_BQ_INT_IRQ, 2, 0);
     HAL_NVIC_EnableIRQ(BOARD_BQ_INT_IRQ);
 
     LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTF, LL_SYSCFG_EXTI_LINE1);
@@ -71,7 +73,7 @@ void board_init(void) {
     config.Mode = LL_EXTI_MODE_IT;
     config.Trigger = LL_EXTI_TRIGGER_RISING_FALLING;
     LL_EXTI_Init(&config);
-    HAL_NVIC_SetPriority(BOARD_PWR_BTN_IRQ, 1, 0);
+    HAL_NVIC_SetPriority(BOARD_PWR_BTN_IRQ, 1, 1);
     HAL_NVIC_EnableIRQ(BOARD_PWR_BTN_IRQ);
 
     LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTB, LL_SYSCFG_EXTI_LINE3);
@@ -81,7 +83,7 @@ void board_init(void) {
     config.Mode = LL_EXTI_MODE_IT;
     config.Trigger = LL_EXTI_TRIGGER_FALLING;
     LL_EXTI_Init(&config);
-    HAL_NVIC_SetPriority(BOARD_VOL_DOWN_IRQ, 1, 0);
+    HAL_NVIC_SetPriority(BOARD_VOL_DOWN_IRQ, 2, 0);
     HAL_NVIC_EnableIRQ(BOARD_VOL_DOWN_IRQ);
 
     LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTB, LL_SYSCFG_EXTI_LINE4);
@@ -91,7 +93,7 @@ void board_init(void) {
     config.Mode = LL_EXTI_MODE_IT;
     config.Trigger = LL_EXTI_TRIGGER_FALLING;
     LL_EXTI_Init(&config);
-    HAL_NVIC_SetPriority(BOARD_VOL_UP_IRQ, 1, 0);
+    HAL_NVIC_SetPriority(BOARD_VOL_UP_IRQ, 2, 0);
     HAL_NVIC_EnableIRQ(BOARD_VOL_UP_IRQ);
 
     LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTA, LL_SYSCFG_EXTI_LINE5);
@@ -101,6 +103,6 @@ void board_init(void) {
     config.Mode = LL_EXTI_MODE_IT;
     config.Trigger = LL_EXTI_TRIGGER_FALLING;
     LL_EXTI_Init(&config);
-    HAL_NVIC_SetPriority(BOARD_MAX_INT_IRQ, 1, 0);
+    HAL_NVIC_SetPriority(BOARD_MAX_INT_IRQ, 2, 0);
     HAL_NVIC_EnableIRQ(BOARD_MAX_INT_IRQ);
 }
