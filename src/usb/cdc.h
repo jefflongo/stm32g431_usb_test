@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdbool.h>
-#include <usbd_core.h>
 #include <usbd_cdc.h>
+#include <usbd_core.h>
 
 void usb_cdc_init(void);
 
